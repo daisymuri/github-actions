@@ -48,4 +48,12 @@ jobs:
         id: get-previous-tag
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
         with:
-          fallback: 1.0.0 # Optional fallback tag to use when no tag can be found      
+          fallback: 1.0.0 # Optional fallback tag to use when no tag can be found 
+
+      # Retrieves all commits since latest tag to now
+      - name: Get Commits Since Previous Tag
+        id: get-commits-since-previous-tag
+        run: |
+          LAST_TAG=${{ steps.get-previous-tag.outputs.tag}}
+          echo "::set-output commit-list=$(git log $LAST_TAG..HEAD --oneline --pretty=format:"* %s")"
+           
