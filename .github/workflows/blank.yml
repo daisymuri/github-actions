@@ -56,4 +56,21 @@ jobs:
         run: |
           LAST_TAG=${{ steps.get-previous-tag.outputs.tag}}
           echo "::set-output commit-list=$(git log $LAST_TAG..HEAD --oneline --pretty=format:"* %s")"
-           
+
+      # Creates PR's body with Header, Warning & the commit from previous step     
+      - name: Create Pull Request Body Text
+        id: create-pull-request-body-text
+        run: |
+          BODY_HEADER="## Release Notes"
+          BODY_WARNING="⚠️ Do not Squash and Merge! ⚠️"
+          COMMIT_LIST=${{ steps.get-commits-since-previous-tag.outputs.commit-list }}
+          echo "::set-out pull-request-body="$BODY_HEADER\n$COMMIT_LIST\n$BODY_WARNING""  
+
+      # Create PR with the data from previous 2 steps
+      - name: Create Pull Request
+        id: create-pull-request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          title: Release Candidate for ${{ steps.get-current-date.outputs.date }}
+          body: ${{ steps.create-pull-request-body-text.outputs.pull-request-body }}
+          branch: main          
