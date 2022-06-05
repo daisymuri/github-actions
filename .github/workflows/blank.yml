@@ -74,4 +74,4 @@ jobs:
         with:
           title: Release Candidate for ${{ steps.get-current-date.outputs.date }}
           body: ${{ steps.create-pull-request-body-text.outputs.pull-request-body }}
-          branch: main          
+          branch: branch          
